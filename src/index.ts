@@ -3,6 +3,7 @@ import express from 'express';
 import eventRouter from './routes/event.routes';
 import authRouter from "./routes/auth.routes";
 import auth from "./middlewares/auth.middleware";
+import bookingRouter from "./routes/booking.routes";
 
 
 const app = express()
@@ -18,6 +19,8 @@ app.get('/health',(req,res)=>{
 app.use('/auth',authRouter)
 
 app.use('/events',auth , eventRouter)
+
+app.use('/booking',auth,bookingRouter)
 
 
 app.listen(port,()=>{

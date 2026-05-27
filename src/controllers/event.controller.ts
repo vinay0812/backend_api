@@ -88,4 +88,64 @@ async function delEvent(req: Request, res: Response) {
 
 }
 
-export { getEvents, getEvent, delEvent }
+async function createSeats(req: Request, res: Response) {
+
+    try {
+
+        // get id of event
+        const eventid = req.params.id
+
+        // get how many seat we want
+        const { seatsPerRow } = req.body
+
+        // check event 
+        const event = await prisma.event.findFirst({
+            where: { id: Number(eventid) }
+        })
+
+        if (!event) {
+            return res.status(404).json({ "message": "event not found" })
+        }
+
+        const existingSeats = await prisma.seat.findFirst({
+            where: {
+                eventId: Number(eventid)
+            }
+        })
+
+        if (existingSeats) {
+            return res.status(400).json({ message: "seats already created for this event" })
+        }
+        let row = ["a", "b", "c", "d", "e", "f"];
+        let seatsData = []
+
+        for (let i = 0; i < row.length; i++) {
+            for (let j = 1; j <= seatsPerRow; j++) {
+                let seatNumber = `${row[i]}${j}`
+
+                // but this create n+1 problem databse query inside a loop
+                //    const exist =  await prisma.seat.findFirst({
+                //         where:{seatNumber,eventId: Number(eventid) }
+                //     })
+
+                //     if(exist){
+                //         continue
+                //     }
+
+
+                seatsData.push({ seatNumber, eventId: Number(eventid) })
+            }
+
+        }
+        const seats = await prisma.seat.createMany({ data: seatsData })
+
+        return res.status(201).json(seats)
+
+        // return res.json(eventid)
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+
+}
+
+export { getEvents, getEvent, delEvent, createSeats }

@@ -12,7 +12,7 @@ const jwtkey = process.env.JWT_KEY
 if (!jwtkey) throw new Error("JWT_KEY not set")
 
 export default async function registerUser(req:Request,res:Response){
-
+ 
     try {
         
         const {name,email,password} = req.body
