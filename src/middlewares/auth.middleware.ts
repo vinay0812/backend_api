@@ -1,6 +1,7 @@
 import { Request,Response , NextFunction } from "express";
 import jsonwebtoken from "jsonwebtoken";
 const secret = process.env.JWT_KEY
+if(!secret) throw new Error("JWT_KEY not set")
 
 export default async function auth(req:Request,res:Response,next:NextFunction) {
 
@@ -11,7 +12,7 @@ export default async function auth(req:Request,res:Response,next:NextFunction) {
         throw new Error()
        }
 
-       const decode = jsonwebtoken.verify(token,secret)
+       const decode = jsonwebtoken.verify(token,secret!)
        next()
     
    } catch (error) {

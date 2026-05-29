@@ -57,7 +57,7 @@ async function  login(req:Request,res:Response) {
             return res.status(403).json({"message":"wrong credentials"})
         }
 
-        const token = jsonwebtoken.sign(String(user.id),jwtkey)
+        const token = jsonwebtoken.sign(String(user.id),jwtkey!)
 
         return res.json(token)
         
